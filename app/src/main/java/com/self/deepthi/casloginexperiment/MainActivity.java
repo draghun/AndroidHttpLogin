@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.webkit.CookieManager;
+import android.util.Log;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -18,6 +19,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         mWebView = (WebView) findViewById(R.id.caswebview);
 
@@ -42,8 +48,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageFinished(WebView view, String url){
-                String cookies = CookieManager.getInstance().getCookie(url);
-                if (url.contains("demo") && cookies.contains("shib_idp_session")) {
+
+                if (url == null || url == "") {
+                    Log.i(TAG, "URL is EMPTY");
+                    return;
+                }
+
+                Log.i(TAG, url);
+
+                if (url.equals("https://login.umd.edu/demo/")) {
+
                     destroyWebView();
                     Intent myIntent = new Intent(MainActivity.this,
                             Main2Activity.class);
@@ -53,12 +67,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
     public void destroyWebView() {
+
+        ((ViewGroup)mWebView.getParent()).removeView(mWebView);
 
         // Make sure you remove the WebView from its parent view before doing anything.
         mWebView.removeAllViews();
