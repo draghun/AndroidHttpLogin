@@ -58,13 +58,18 @@ public class MainActivity extends AppCompatActivity {
 
                 if (url.equals("https://login.umd.edu/demo/")) {
 
-                    destroyWebView();
                     Intent myIntent = new Intent(MainActivity.this,
                             Main2Activity.class);
                     startActivity(myIntent);
                 }
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        destroyWebView();
     }
 
     public void destroyWebView() {
